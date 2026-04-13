@@ -78,12 +78,17 @@ Make sure npx and mcp-remote are installed on your computer.
 
 For Mac:
 
+```
 brew install node
 npx mcp-remote
+```
+
 For Windows (PowerShell):
 
+```
 winget install OpenJS.NodeJS
 npx mcp-remote
+```
 
 ## Other MCP Clients
 
@@ -111,16 +116,16 @@ If you see results from your Peliqan account, you're all set.
 
 ## Account-wide API token
 
-Log in to Peliqan at https://app.eu.peliqan.io
-Go to Admin > API Token & Webhooks
-Copy your API token
+* Log in to Peliqan at https://app.eu.peliqan.io
+* Go to Admin > API Token & Webhooks
+* Copy your API token
 
 ## Personal API token
 
-Log in to Peliqan at https://app.eu.peliqan.io
-Click on the user icon in the bottom left corner of Peliqan
-Select User Settings > API token
-Copy your API token
+* Log in to Peliqan at https://app.eu.peliqan.io
+* Click on the user icon in the bottom left corner of Peliqan
+* Select User Settings > API token
+* Copy your API token
 
 # Need help?
 
