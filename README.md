@@ -1,14 +1,14 @@
 # Exact Online MCP Server
 MCP Server for Exact Online with read and write capabilities.
 
-This repository contains all the information needed to connect to your Exact Online account using MCP.
+This repository contains all the information needed to connect to your [Exact Online](https://peliqan.io/ai/exact-online/) account using MCP.
 
 # What is the Peliqan MCP Server?
 
-The Peliqan MCP (Model Context Protocol) Server lets AI assistants like Claude Code, Claude Desktop and ChatGPT connect to your Exact Online account. Once connected, the AI can explore your data, answer business questions and take actions inside of Exact Online.
+The [Peliqan MCP (Model Context Protocol) Server](https://peliqan.io/mcp) lets AI assistants like Claude Code, Claude Desktop and ChatGPT connect to your Exact Online account. Once connected, the AI can explore your data, answer business questions and take actions inside of Exact Online.
 
 # Prerequisites
-* A Peliqan account, visit https://peliqan.io to sign up for a free trial.
+* A [Peliqan](https://peliqan.io) account, visit https://peliqan.io to sign up for a free trial.
 * An Exact Online connection added in Peliqan.
 * A Peliqan API token: generate an API token in Peliqan under Admin > API keys, or create a personal API key under User Settings.
 * An MCP Client: ChatGPT, Claude Code, Claude Desktop etc.
