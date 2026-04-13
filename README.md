@@ -94,7 +94,7 @@ npx mcp-remote
 
 Any MCP-compatible AI client that supports HTTPS transport can connect using the same URL and API token. Check your client's documentation on how to add an MCP Server.
 
-For clients that support custom headers, use the URL https://mcp.eu.peliqan.io/mcp and header Authorization: Bearer YOUR_PELIQAN_API_TOKEN.
+For clients that support custom headers, use the URL https://mcp.eu.peliqan.io/mcp and header `Authorization: Bearer YOUR_PELIQAN_API_TOKEN`.
 
 For clients that only accept a URL (without custom header support), append your API token as a query parameter:
 
