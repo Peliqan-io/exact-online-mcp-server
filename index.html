@@ -1,1 +1,546 @@
-<h1>Exact Online MCP Server</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exact Online MCP Server — Peliqan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..900,0..100&family=Manrope:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f6f2ea;
+    --bg-soft: #efeadf;
+    --ink: #161514;
+    --ink-soft: #4a4842;
+    --muted: #8a857a;
+    --rule: #d9d2c3;
+    --accent: #0d7c66;
+    --accent-soft: #cfe6df;
+    --accent-deep: #08503f;
+    --code-bg: #1c1d1f;
+    --code-ink: #e7e3d8;
+    --code-muted: #8e8a7e;
+    --code-accent: #7dd3b8;
+    --code-string: #e6c585;
+    --note-bg: #fff4d6;
+    --note-rule: #d9b85c;
+    --max: 780px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Manrope', system-ui, sans-serif;
+    font-size: 17px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Subtle paper-grain background */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(13,124,102,0.04), transparent 40%),
+      radial-gradient(circle at 80% 80%, rgba(180,140,40,0.04), transparent 40%);
+  }
+
+  main {
+    position: relative;
+    z-index: 1;
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 80px 32px 120px;
+  }
+
+  /* ── Header ────────────────────────────────────── */
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .eyebrow::before {
+    content: "";
+    width: 28px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-variation-settings: "SOFT" 30;
+    font-size: clamp(40px, 6vw, 64px);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin: 0 0 24px;
+    color: var(--ink);
+  }
+  h1 em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent-deep);
+  }
+
+  .lede {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: 22px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    max-width: 60ch;
+    margin: 0 0 56px;
+  }
+
+  /* ── TOC ──────────────────────────────────────── */
+  .toc {
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    padding: 24px 0;
+    margin: 0 0 72px;
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 32px;
+    align-items: start;
+  }
+  .toc-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding-top: 4px;
+  }
+  .toc ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    counter-reset: toc;
+    columns: 2;
+    column-gap: 32px;
+  }
+  .toc li {
+    counter-increment: toc;
+    margin-bottom: 8px;
+    break-inside: avoid;
+  }
+  .toc a {
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s, color 0.2s;
+    font-size: 15px;
+  }
+  .toc a::before {
+    content: counter(toc, decimal-leading-zero);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    margin-right: 12px;
+    letter-spacing: 0.05em;
+  }
+  .toc a:hover { color: var(--accent); border-color: var(--accent); }
+
+  /* ── Section headings ────────────────────────── */
+  h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 38px;
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    margin: 88px 0 24px;
+    color: var(--ink);
+    position: relative;
+    padding-top: 32px;
+    border-top: 1px solid var(--rule);
+  }
+  h2::before {
+    content: attr(data-num);
+    position: absolute;
+    top: 36px;
+    left: 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    color: var(--accent);
+  }
+  h2 .h-text { display: block; padding-top: 18px; }
+
+  h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 22px;
+    line-height: 1.3;
+    letter-spacing: -0.005em;
+    margin: 48px 0 16px;
+    color: var(--ink);
+  }
+
+  h4 {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 32px 0 12px;
+  }
+
+  /* ── Body text ───────────────────────────────── */
+  p { margin: 0 0 18px; max-width: 65ch; }
+  a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--accent-soft); transition: border-color 0.2s; }
+  a:hover { border-color: var(--accent); }
+
+  ul {
+    padding-left: 0;
+    list-style: none;
+    margin: 0 0 24px;
+  }
+  ul li {
+    position: relative;
+    padding-left: 24px;
+    margin-bottom: 10px;
+    max-width: 65ch;
+  }
+  ul li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 12px;
+    width: 12px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  /* ── Code blocks ─────────────────────────────── */
+  pre {
+    background: var(--code-bg);
+    color: var(--code-ink);
+    border-radius: 8px;
+    padding: 22px 24px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13.5px;
+    line-height: 1.6;
+    margin: 16px 0 28px;
+    position: relative;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.03), 0 8px 24px -12px rgba(0,0,0,0.15);
+  }
+  pre::before {
+    content: attr(data-lang);
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--code-muted);
+  }
+  pre code { font-family: inherit; color: inherit; }
+
+  /* Inline code */
+  p code, li code, h3 code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.86em;
+    padding: 2px 6px;
+    background: var(--bg-soft);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    color: var(--accent-deep);
+    white-space: nowrap;
+  }
+
+  /* Token-style coloring for code (simple, no parser) */
+  .tok-key   { color: var(--code-accent); }
+  .tok-str   { color: var(--code-string); }
+  .tok-cmt   { color: var(--code-muted); font-style: italic; }
+  .tok-cmd   { color: var(--code-accent); }
+
+  /* ── Notes ───────────────────────────────────── */
+  .note {
+    background: var(--note-bg);
+    border-left: 3px solid var(--note-rule);
+    padding: 16px 20px;
+    margin: 24px 0;
+    border-radius: 0 6px 6px 0;
+    font-size: 15px;
+    line-height: 1.55;
+  }
+  .note strong {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 6px;
+    color: #8a6500;
+    font-weight: 600;
+  }
+  .note p { margin: 0; }
+
+  /* ── Verify-prompts callout ──────────────────── */
+  .prompts {
+    background: var(--bg-soft);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 8px 8px;
+    margin: 20px 0 24px;
+    display: grid;
+    gap: 8px;
+  }
+  .prompts .prompt {
+    background: var(--bg);
+    padding: 14px 18px;
+    border-radius: 5px;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 17px;
+    color: var(--ink);
+    position: relative;
+    padding-left: 44px;
+  }
+  .prompts .prompt::before {
+    content: "›";
+    position: absolute;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent);
+    font-size: 18px;
+    font-weight: 600;
+    font-style: normal;
+  }
+
+  /* ── Footer ──────────────────────────────────── */
+  footer {
+    margin-top: 100px;
+    padding-top: 32px;
+    border-top: 1px solid var(--rule);
+    color: var(--muted);
+    font-size: 13px;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.05em;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  footer a { color: var(--ink-soft); border: none; }
+  footer a:hover { color: var(--accent); }
+
+  /* ── Small screens ───────────────────────────── */
+  @media (max-width: 640px) {
+    main { padding: 56px 22px 80px; }
+    h1 { font-size: 40px; }
+    h2 { font-size: 28px; }
+    .lede { font-size: 18px; }
+    .toc { grid-template-columns: 1fr; gap: 16px; }
+    .toc ol { columns: 1; }
+    pre { font-size: 12.5px; padding: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<main>
+
+  <p class="eyebrow">Peliqan · Documentation</p>
+  <h1>Exact Online <em>MCP</em> Server</h1>
+  <p class="lede">
+    Connect AI assistants like Claude Code, Claude Desktop and ChatGPT to your
+    <a href="https://peliqan.io/ai/exact-online/">Exact Online</a> account — read your data,
+    answer business questions, and take actions, all through MCP.
+  </p>
+
+  <nav class="toc" aria-label="On this page">
+    <span class="toc-label">On this page</span>
+    <ol>
+      <li><a href="#what-is">What is the Peliqan MCP Server?</a></li>
+      <li><a href="#prerequisites">Prerequisites</a></li>
+      <li><a href="#setup">Setup the MCP Server</a></li>
+      <li><a href="#claude-code">Claude Code</a></li>
+      <li><a href="#claude-desktop">Claude Desktop</a></li>
+      <li><a href="#other-clients">Other MCP Clients</a></li>
+      <li><a href="#verify">Verifying the connection</a></li>
+      <li><a href="#token">Getting your API token</a></li>
+      <li><a href="#help">Need help?</a></li>
+    </ol>
+  </nav>
+
+  <!-- ── What is ────────────────────────────────── -->
+  <section id="what-is">
+    <h2 data-num="01"><span class="h-text">What is the Peliqan MCP Server?</span></h2>
+    <p>
+      The <a href="https://peliqan.io/mcp">Peliqan MCP (Model Context Protocol) Server</a>
+      lets AI assistants like Claude Code, Claude Desktop and ChatGPT connect to your
+      Exact Online account. Once connected, the AI can explore your data, answer business
+      questions and take actions inside of Exact Online.
+    </p>
+  </section>
+
+  <!-- ── Prerequisites ──────────────────────────── -->
+  <section id="prerequisites">
+    <h2 data-num="02"><span class="h-text">Prerequisites</span></h2>
+    <ul>
+      <li>A <a href="https://peliqan.io">Peliqan</a> account — visit peliqan.io to sign up for a free trial.</li>
+      <li>An Exact Online connection added in Peliqan.</li>
+      <li>A Peliqan API token: generate one under <code>Admin &rsaquo; API keys</code>, or create a personal API key under <code>User Settings</code>.</li>
+      <li>An MCP Client: ChatGPT, Claude Code, Claude Desktop, etc.</li>
+    </ul>
+  </section>
+
+  <!-- ── Setup ──────────────────────────────────── -->
+  <section id="setup">
+    <h2 data-num="03"><span class="h-text">Setup the MCP Server</span></h2>
+
+    <h3 id="claude-code">Setup in Claude Code <span style="color:var(--muted);font-weight:400;font-size:0.7em;">(terminal)</span></h3>
+    <p>
+      Add the following to your <code>~/.claude.json</code> file. If the file doesn't
+      exist yet, create it.
+    </p>
+<pre data-lang="json"><code>{
+  <span class="tok-key">"mcpServers"</span>: {
+    <span class="tok-key">"peliqan"</span>: {
+      <span class="tok-key">"type"</span>: <span class="tok-str">"http"</span>,
+      <span class="tok-key">"url"</span>: <span class="tok-str">"https://mcp.eu.peliqan.io/mcp"</span>,
+      <span class="tok-key">"headers"</span>: {
+        <span class="tok-key">"Authorization"</span>: <span class="tok-str">"Bearer YOUR_PELIQAN_API_TOKEN"</span>
+      }
+    }
+  }
+}</code></pre>
+    <div class="note">
+      <strong>Note</strong>
+      <p>Replace <code>YOUR_PELIQAN_API_TOKEN</code> with your Peliqan API token. After saving, restart Claude Code — you should see Peliqan listed when you type <code>/mcp</code> in the chat.</p>
+    </div>
+
+    <h3 id="claude-desktop">Setup in Claude Desktop</h3>
+    <p>
+      Open Claude Desktop settings &rsaquo; <strong>Developer</strong> &rsaquo;
+      <strong>Edit Config</strong> and add the block below under <code>mcpServers</code>.
+    </p>
+
+    <h4>For Mac</h4>
+<pre data-lang="json"><code><span class="tok-key">"mcpServers"</span>: {
+  <span class="tok-key">"peliqan"</span>: {
+    <span class="tok-key">"command"</span>: <span class="tok-str">"npx"</span>,
+    <span class="tok-key">"args"</span>: [
+      <span class="tok-str">"mcp-remote"</span>,
+      <span class="tok-str">"https://mcp.eu.peliqan.io/mcp"</span>,
+      <span class="tok-str">"--header"</span>,
+      <span class="tok-str">"Authorization: Bearer YOUR_PELIQAN_API_TOKEN"</span>
+    ]
+  }
+}</code></pre>
+
+    <h4>For Windows</h4>
+<pre data-lang="json"><code><span class="tok-key">"mcpServers"</span>: {
+  <span class="tok-key">"peliqan"</span>: {
+    <span class="tok-key">"command"</span>: <span class="tok-str">"C:\\\"Program Files\"\\nodejs\\npx"</span>,
+    <span class="tok-key">"args"</span>: [
+      <span class="tok-str">"mcp-remote"</span>,
+      <span class="tok-str">"https://mcp.eu.peliqan.io/mcp"</span>,
+      <span class="tok-str">"--header"</span>,
+      <span class="tok-str">"Authorization: Bearer YOUR_PELIQAN_API_TOKEN"</span>
+    ]
+  }
+}</code></pre>
+    <div class="note">
+      <strong>Note</strong>
+      <p>Replace <code>YOUR_PELIQAN_API_TOKEN</code> with your Peliqan API token. Make sure <code>npx</code> and <code>mcp-remote</code> are installed on your computer.</p>
+    </div>
+
+    <h4>Install Node + mcp-remote · Mac</h4>
+<pre data-lang="bash"><code><span class="tok-cmd">brew install</span> node
+<span class="tok-cmd">npx</span> mcp-remote</code></pre>
+
+    <h4>Install Node + mcp-remote · Windows (PowerShell)</h4>
+<pre data-lang="powershell"><code><span class="tok-cmd">winget install</span> OpenJS.NodeJS
+<span class="tok-cmd">npx</span> mcp-remote</code></pre>
+
+    <h3 id="other-clients">Other MCP Clients</h3>
+    <p>
+      Any MCP-compatible AI client that supports HTTPS transport can connect using the
+      same URL and API token. Check your client's documentation on how to add an MCP Server.
+    </p>
+    <p>
+      For clients that support custom headers, use the URL
+      <code>https://mcp.eu.peliqan.io/mcp</code> and the header
+      <code>Authorization: Bearer YOUR_PELIQAN_API_TOKEN</code>.
+    </p>
+    <p>
+      For clients that only accept a URL (without custom header support), append
+      your API token as a query parameter:
+    </p>
+<pre data-lang="url"><code>https://mcp.eu.peliqan.io/mcp?api_key=YOUR_PELIQAN_API_TOKEN</code></pre>
+    <p>Replace <code>YOUR_PELIQAN_API_TOKEN</code> with your API token.</p>
+
+    <h3 id="verify">Verifying the connection</h3>
+    <p>Once connected, try these prompts to confirm everything is working:</p>
+    <div class="prompts">
+      <div class="prompt">List my Peliqan connections</div>
+      <div class="prompt">Show me all data tables in my Peliqan account</div>
+    </div>
+    <p>If you see results from your Peliqan account, you're all set.</p>
+  </section>
+
+  <!-- ── Token ──────────────────────────────────── -->
+  <section id="token">
+    <h2 data-num="04"><span class="h-text">Getting your API token in Peliqan</span></h2>
+
+    <h3>Account-wide API token</h3>
+    <ul>
+      <li>Log in to Peliqan at <a href="https://app.eu.peliqan.io">app.eu.peliqan.io</a></li>
+      <li>Go to <code>Admin &rsaquo; API Token &amp; Webhooks</code></li>
+      <li>Copy your API token</li>
+    </ul>
+
+    <h3>Personal API token</h3>
+    <ul>
+      <li>Log in to Peliqan at <a href="https://app.eu.peliqan.io">app.eu.peliqan.io</a></li>
+      <li>Click on the user icon in the bottom-left corner of Peliqan</li>
+      <li>Select <code>User Settings &rsaquo; API token</code></li>
+      <li>Copy your API token</li>
+    </ul>
+  </section>
+
+  <!-- ── Help ───────────────────────────────────── -->
+  <section id="help">
+    <h2 data-num="05"><span class="h-text">Need help?</span></h2>
+    <p>
+      Reach out to Peliqan support at
+      <a href="mailto:support@peliqan.io">support@peliqan.io</a>. You can also ask your AI
+      (e.g. Claude) directly — once the Peliqan MCP Server is connected, the AI has full
+      context on how Peliqan works.
+    </p>
+  </section>
+
+  <footer>
+    <span>Peliqan · Exact Online MCP Server</span>
+    <span><a href="https://peliqan.io">peliqan.io</a></span>
+  </footer>
+
+</main>
+
+</body>
+</html>
